@@ -24,9 +24,12 @@ class Kontakt:
     def ustaw_imie(self, imie):
         self.imie = imie
 
-
-f = open('zap_k.json', "r")
-kontakty = json.loads(f.read())
+try:
+    f = open('zap_k.json', "r")
+    kontakty = json.loads(f.read())
+except FileNotFoundError:
+    kontakty = []
+    print("nie znaleziono pliku. lista kontaktów jest pusta")
 
 
 def from_json(json_kontakt):
