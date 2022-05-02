@@ -96,9 +96,45 @@ def usuwanie_kontaktu():
 
 
 
+def input_do_edycji(window, tekst, row, x):
+    label1 = Label(window, text=tekst)
+    label1.grid(row=row, column=0)
+    okno = Entry(window)
+    okno.insert(0, x)
+    okno.grid(column=2, row=row, sticky=(N, W, E, S))
+    okno.focus_set()
+    return okno
+
+def okno_do_edycji():
+    window = tk.Toplevel()
+    index = widok_kontaktow.curselection()
+    wyb_kontakt = lista_kontaktow[index[0]]
+
+    okno_imie = input_do_edycji(window, "podaj imie", 0, wyb_kontakt.imie)
+    okno_nazwisko = input_do_edycji(window, "podaj nazwisko", 1, wyb_kontakt.nazwisko)
+    okno_nr = input_do_edycji(window, "podaj nr tel", 2, wyb_kontakt.nr_tel)
+    def action():
+        kontakt = Kontakt(okno_imie.get(), okno_nazwisko.get(), okno_nr.get())
+        lista_kontaktow.append(kontakt)
+        zapiszListeKontaktow(lista_kontaktow)
+        kontakty_var.set(lista_kontaktow)
+        print(kontakty_json)
+        window.destroy()
+
+    button_zapisz = tk.Button(window, text="Zapisz", command=action)
+    button_zapisz.grid(row=3, column=0, sticky='we')
+
+def edytowanie_kontaktu():
+    index = widok_kontaktow.curselection()
+    if index:
+        okno_do_edycji()
+
+
+
+
 nowy_kontakt = tk.Button(frame, text="dodaj nowy kontakt", command=tworzenie_nowego_kontaktu, bg='#567', fg='White')
 
-edytuj_kontakt = tk.Button(frame, text="edytuj kontakt", command=tworzenie_nowego_kontaktu, bg='#567', fg='White')
+edytuj_kontakt = tk.Button(frame, text="edytuj kontakt", command=edytowanie_kontaktu, bg='#567', fg='White')
 
 usun_kontakt = tk.Button(frame, text="usuń kontakt", command=usuwanie_kontaktu, bg='#567', fg='White')
 
