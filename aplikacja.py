@@ -40,6 +40,7 @@ for json_kontakt in kontakty_json:
     lista_kontaktow.append(kontakt)
 
 
+
 kontakty_var = tk.StringVar(value=lista_kontaktow)
 widok_kontaktow = Listbox(frame, listvariable=kontakty_var, selectmode='extended')
 # scrollbar = tk.Scrollbar(ekran, orient='vertical', command=widok_kontaktow.yview)
@@ -53,10 +54,11 @@ def tworzenie_nowego_kontaktu():
     okno_nr = input_kontakt(window, "podaj nr tel", 2)
 
     def action():
-        # nr_zaznaczonej_linii = widok_kontaktow.curselection()
-        # print(nr_zaznaczonej_linii)
-        kontakt = Kontakt(okno_imie.get(), okno_nazwisko.get(), okno_nr.get())
+        imie = okno_imie.get()
+        imie = imie.capitalize()
+        kontakt = Kontakt(imie, okno_nazwisko.get(), okno_nr.get())
         lista_kontaktow.append(kontakt)
+        lista_kontaktow.sort(key=lambda x: x.imie, reverse=False)
         zapiszListeKontaktow(lista_kontaktow)
         kontakty_var.set(lista_kontaktow)
         print(kontakty_json)
@@ -115,7 +117,9 @@ def okno_do_edycji():
     okno_nr = input_do_edycji(window, "podaj nr tel", 2, wyb_kontakt.nr_tel)
     def action():
         kontakt = Kontakt(okno_imie.get(), okno_nazwisko.get(), okno_nr.get())
-        lista_kontaktow.append(kontakt)
+        wyb_kontakt.imie = kontakt.imie
+        wyb_kontakt.nazwisko = kontakt.nazwisko
+        wyb_kontakt.nr_tel = kontakt.nr_tel
         zapiszListeKontaktow(lista_kontaktow)
         kontakty_var.set(lista_kontaktow)
         print(kontakty_json)
@@ -130,7 +134,30 @@ def edytowanie_kontaktu():
         okno_do_edycji()
 
 
+def szukaj_po_znaku(x):
+    print(x)
+    wyszukane_kontakty = []
+    if x.char:
+        if x.char == '\x08':
+            pobrane = pole_wpisywania.get()
+            uciete = (pobrane[:-1])
+            for i in lista_kontaktow:
+                if uciete in str(i):
+                    wyszukane_kontakty.append(i)
+        else:
+            pobrane = pole_wpisywania.get() + x.char
+            for i in lista_kontaktow:
+                if pobrane in str(i):
+                    wyszukane_kontakty.append(i)
+        kontakty_var.set(wyszukane_kontakty)
 
+szukaj = Label(ekran, text="wyszukaj")
+pole_wpisywania = Entry(ekran)
+pole_wpisywania.grid(row=3, column=0)
+###
+pole_wpisywania.bind('<Key>', szukaj_po_znaku)
+
+###
 
 nowy_kontakt = tk.Button(frame, text="dodaj nowy kontakt", command=tworzenie_nowego_kontaktu, bg='#567', fg='White')
 
@@ -140,10 +167,12 @@ usun_kontakt = tk.Button(frame, text="usuń kontakt", command=usuwanie_kontaktu,
 
 
 
-frame.grid(column=0, row=0)
-nowy_kontakt.grid(row=2, column=0)
-edytuj_kontakt.grid(row=2, column=1)
-usun_kontakt.grid(row=2, column=2)
-widok_kontaktow.grid(row=0, column=0, pady="5 20", columnspan=2, sticky="nwes")
+frame.grid(column=0, row=1, columnspan=3)
+widok_kontaktow.grid(row=0, column=0, pady="5 20", columnspan=3, sticky="nwes")
+nowy_kontakt.grid(row=3, column=0)
+edytuj_kontakt.grid(row=3, column=1)
+usun_kontakt.grid(row=3, column=2)
+szukaj.grid(row=0, column=0)
+pole_wpisywania.grid(row=0, column=1)
 
 ekran.mainloop()
