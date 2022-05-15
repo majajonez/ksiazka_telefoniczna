@@ -4,10 +4,9 @@ from tkinter import ttk
 from tkinter.messagebox import showinfo
 import json
 
-
 ekran = tk.Tk()
 ekran.title("książka telefoniczna")
-frame = ttk.Frame(ekran)
+frame = ttk.Frame(ekran, padding=(3,3,12,12))
 
 
 class Kontakt:
@@ -22,6 +21,7 @@ class Kontakt:
     def ustaw_imie(self, imie):
         self.imie = imie
 
+
 try:
     f = open('zap_k.json', "r")
     kontakty_json = json.loads(f.read())
@@ -32,16 +32,18 @@ except FileNotFoundError:
 
 def from_json(json_kontakt):
     return Kontakt(json_kontakt["imie"], json_kontakt["nazwisko"], json_kontakt["nr_tel"])
+
+
 lista_kontaktow = []
 
 for json_kontakt in kontakty_json:
     kontakt = from_json(json_kontakt)
     lista_kontaktow.append(kontakt)
 
-
-
 kontakty_var = tk.StringVar(value=lista_kontaktow)
 widok_kontaktow = Listbox(frame, listvariable=kontakty_var, selectmode='extended')
+
+
 # scrollbar = tk.Scrollbar(ekran, orient='vertical', command=widok_kontaktow.yview)
 # scrollbar.grid(row=0, column=3, sticky='nse')
 # widok_kontaktow.config(yscrollcommand=scrollbar.set)
@@ -77,6 +79,7 @@ def zapiszListeKontaktow(lista_kontaktow):
         caly_json = json.dumps(lista_map)
         uchwyt_do_pliku.write(caly_json)
 
+
 def input_kontakt(window, tekst, row):
     label1 = Label(window, text=tekst)
     label1.grid(row=row, column=0)
@@ -96,7 +99,6 @@ def usuwanie_kontaktu():
         print(lista_kontaktow[index[0]])
 
 
-
 def input_do_edycji(window, tekst, row, x):
     label1 = Label(window, text=tekst)
     label1.grid(row=row, column=0)
@@ -106,6 +108,7 @@ def input_do_edycji(window, tekst, row, x):
     okno.focus_set()
     return okno
 
+
 def okno_do_edycji():
     window = tk.Toplevel()
     index = widok_kontaktow.curselection()
@@ -114,6 +117,7 @@ def okno_do_edycji():
     okno_imie = input_do_edycji(window, "podaj imie", 0, wyb_kontakt.imie)
     okno_nazwisko = input_do_edycji(window, "podaj nazwisko", 1, wyb_kontakt.nazwisko)
     okno_nr = input_do_edycji(window, "podaj nr tel", 2, wyb_kontakt.nr_tel)
+
     def action():
         kontakt = Kontakt(okno_imie.get(), okno_nazwisko.get(), okno_nr.get())
         wyb_kontakt.imie = kontakt.imie
@@ -126,6 +130,7 @@ def okno_do_edycji():
 
     button_zapisz = tk.Button(window, text="Zapisz", command=action)
     button_zapisz.grid(row=3, column=0, sticky='we')
+
 
 def edytowanie_kontaktu():
     index = widok_kontaktow.curselection()
@@ -142,11 +147,10 @@ def szukaj_po_znaku(event):
     kontakty_var.set(wyszukane_kontakty)
 
 
-szukaj = Label(ekran, text="wyszukaj")
+szukaj = Label(ekran, text="wyszukaj", padx=5)
 pole_wpisywania = Entry(ekran)
-pole_wpisywania.grid(row=3, column=0)
+pole_wpisywania.grid(row=3, column=0, padx=12)
 pole_wpisywania.bind('<KeyRelease>', szukaj_po_znaku)
-
 
 nowy_kontakt = tk.Button(frame, text="dodaj nowy kontakt", command=tworzenie_nowego_kontaktu, bg='#567', fg='White')
 
@@ -154,14 +158,19 @@ edytuj_kontakt = tk.Button(frame, text="edytuj kontakt", command=edytowanie_kont
 
 usun_kontakt = tk.Button(frame, text="usuń kontakt", command=usuwanie_kontaktu, bg='#567', fg='White')
 
-
-
-frame.grid(column=0, row=1, columnspan=3)
-widok_kontaktow.grid(row=0, column=0, pady="5 20", columnspan=3, sticky="nwes")
-nowy_kontakt.grid(row=3, column=0)
-edytuj_kontakt.grid(row=3, column=1)
-usun_kontakt.grid(row=3, column=2)
+frame.grid(column=0, row=1, columnspan=3, sticky=(N, S, W, E))
+widok_kontaktow.grid(row=0, column=0, pady="5 20", columnspan=3, sticky=(N, S, W, E))
+nowy_kontakt.grid(row=3, column=0, sticky=(W, E))
+edytuj_kontakt.grid(row=3, column=1, sticky=(W, E))
+usun_kontakt.grid(row=3, column=2, sticky=(W, E))
 szukaj.grid(row=0, column=0)
-pole_wpisywania.grid(row=0, column=1)
+pole_wpisywania.grid(row=0, column=1, sticky=(W, E), columnspan=2)
+ekran.rowconfigure(1, weight=1)
+ekran.columnconfigure(1, weight=1)
+frame.columnconfigure(0, weight=3)
+frame.columnconfigure(1, weight=3)
+frame.columnconfigure(2, weight=1)
+frame.rowconfigure(0, weight=3)
+
 
 ekran.mainloop()
