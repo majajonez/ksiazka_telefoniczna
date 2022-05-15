@@ -7,7 +7,6 @@ import json
 
 ekran = tk.Tk()
 ekran.title("książka telefoniczna")
-# ekran.geometry("600x800")
 frame = ttk.Frame(ekran)
 
 
@@ -134,30 +133,20 @@ def edytowanie_kontaktu():
         okno_do_edycji()
 
 
-def szukaj_po_znaku(x):
-    print(x)
+def szukaj_po_znaku(event):
     wyszukane_kontakty = []
-    if x.char:
-        if x.char == '\x08':
-            pobrane = pole_wpisywania.get()
-            uciete = (pobrane[:-1])
-            for i in lista_kontaktow:
-                if uciete in str(i):
-                    wyszukane_kontakty.append(i)
-        else:
-            pobrane = pole_wpisywania.get() + x.char
-            for i in lista_kontaktow:
-                if pobrane in str(i):
-                    wyszukane_kontakty.append(i)
-        kontakty_var.set(wyszukane_kontakty)
+    pobrane = pole_wpisywania.get()
+    for kontakt in lista_kontaktow:
+        if pobrane in str(kontakt).lower():
+            wyszukane_kontakty.append(kontakt)
+    kontakty_var.set(wyszukane_kontakty)
+
 
 szukaj = Label(ekran, text="wyszukaj")
 pole_wpisywania = Entry(ekran)
 pole_wpisywania.grid(row=3, column=0)
-###
-pole_wpisywania.bind('<Key>', szukaj_po_znaku)
+pole_wpisywania.bind('<KeyRelease>', szukaj_po_znaku)
 
-###
 
 nowy_kontakt = tk.Button(frame, text="dodaj nowy kontakt", command=tworzenie_nowego_kontaktu, bg='#567', fg='White')
 
