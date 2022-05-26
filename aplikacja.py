@@ -44,9 +44,6 @@ kontakty_var = tk.StringVar(value=lista_kontaktow)
 widok_kontaktow = Listbox(frame, listvariable=kontakty_var, selectmode='extended')
 
 
-# scrollbar = tk.Scrollbar(ekran, orient='vertical', command=widok_kontaktow.yview)
-# scrollbar.grid(row=0, column=3, sticky='nse')
-# widok_kontaktow.config(yscrollcommand=scrollbar.set)
 
 def tworzenie_nowego_kontaktu():
     window = tk.Toplevel()
